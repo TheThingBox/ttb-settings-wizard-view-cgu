@@ -1,0 +1,27 @@
+<div class="row">
+  <div class="col m3 hide-on-small-only" style="padding-right:0px;">
+    <div style="float: right"><img style="width:158px" src="/settings_wizard/cgu/45-left-crop.jpg"/></div>
+  </div>
+  <div class="col s12 m6 cgu_container" style="padding-right:0px; padding-left:0px;">
+    <div id="cgu" class="setting-edit-container" style="border:1px solid #aaa;">
+        <iframe src="<%= wizard_cgu_html_url %>" style="float:left;" id="cguIFrame" width="100%" height="100%" marginheight="0px" marginwidth="0px" frameBorder="0px">
+        </iframe>
+    </div>
+  </div>
+  <div class="col m3 hide-on-small-only" style="padding-left:0px;">
+    <div style=""><img style="width:158px" src="/settings_wizard/cgu/45-right-crop.jpg"/></div>
+  </div>
+</div>
+<div class="row">
+  <div class="col m3 hide-on-small-only"></div>
+  <div class="col s12 m6">
+    <form action="#">
+      <label>
+        <input id="wizard_cgu_form_accept" type="checkbox" class="filled-in"/>
+        <span>I accept the Terms stated above</span>
+      </label>
+    </form>
+  </div>
+</div>
+<div id="wizard_<%= views[viewIndex].name %>_footer" class="row">
+</div>

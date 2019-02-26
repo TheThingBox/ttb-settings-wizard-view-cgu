@@ -1,0 +1,14 @@
+#cgu{
+    height: 360px;
+    margin: auto;
+}
+
+.cgu_container {
+  min-width: 400px;
+}
+
+@media (max-width: 600px) {
+  .cgu_container {
+    min-width: 200px;
+  }
+}
