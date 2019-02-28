@@ -20,30 +20,46 @@ function init(app, apiToExpose, persistenceDir) {
   settingsPath = path.join(settingsPath, 'settings.json')
   syncStats()
 
-  app.use(apiToExpose, bodyParser.urlencoded({ extended: true }));
+  app.use(apiToExpose, bodyParser.json());
   app.get(apiToExpose, function(req, res){
     syncStats()
     res.json(stats)
   });
 
   app.post(apiToExpose, function(req, res){
-    syncStats()
-    res.json(stats)
+    var data = req.body;
+    if(data.readed === "true" || data.readed === true){
+      stats.status = 'ok'
+      stats.readed = true
+      syncStats(true)
+      res.json({message: `The Terms was set to accepted.`})
+    } else {
+      stats.status = 'nok'
+      stats.readed = false
+      syncStats(true)
+      res.status(403).json({message: "The Terms should be accepted", error: "cgu_not_readed"})
+    }
   });
 }
 
-function syncStats(){
+function syncStats(update){
   if(!settingsPath){
     return
   }
+  var statsFromFile
   try {
-    stats = JSON.parse(fs.readFileSync(settingsPath))
+    statsFromFile = JSON.parse(fs.readFileSync(settingsPath))
+    if(update === true){
+      stats = Object.assign({}, statsFromFile, stats)
+    } else {
+      stats = Object.assign({}, stats, statsFromFile)
+    }
   } catch(e){
     try {
       fs.writeFileSync(settingsPath, JSON.stringify(stats, null, 4), { encoding: 'utf8'})
     } catch(e){}
   }
-  if(stats.initialized === false){
+  if(stats.initialized === false || update === true){
     stats.initialized = true
     try {
       fs.writeFileSync(settingsPath, JSON.stringify(stats, null, 4), { encoding: 'utf8'})

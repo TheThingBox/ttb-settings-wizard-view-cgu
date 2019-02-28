@@ -39,16 +39,38 @@ ejs.renderFile(
       return _html
     }
 
-    params.views[_wizard_view_cgu_index].post = function(callback){
-      if(typeof callback === 'function'){
-        callback()
+    params.views[_wizard_view_cgu_index].post = function(){
+      var request = new Request(params.views[_wizard_view_cgu_index].api)
+
+      var ok = params.views[_wizard_view_cgu_index].isOk()
+      if(!ok){
+        request.setData({})
+      } else {
+        request.setData({
+          readed: form_params.cgu.readed
+        })
       }
+      return request.post()
     }
 
     document.getElementById("wizard_cgu_form_accept").addEventListener('input', cguReadedChange);
     function cguReadedChange(e){
       form_params.cgu.readed = document.getElementById('wizard_cgu_form_accept').checked
       params.views[_wizard_view_cgu_index].checkButtonNextStats()
+    }
+
+    params.views[_wizard_view_cgu_index].loaded = function(){
+      var _flagsRequest = new Request(params.views[_wizard_view_cgu_index].api)
+      return new Promise( (resolve, reject) => {
+        _flagsRequest.get().then( flags => {
+          if(flags.readed === true){
+            document.getElementById("wizard_cgu_form_accept").disabled = true
+            document.getElementById('wizard_cgu_form_accept').checked = true
+            form_params.cgu.readed = true
+          }
+          resolve()
+        })
+      })
     }
   }
 );
