@@ -7,8 +7,27 @@
   min-width: 400px;
 }
 
+.cgu_wrapper{
+    display: block;
+}
+
+.cgu_wrapper_replacer{
+  display: none;
+}
+
 @media (max-width: 600px) {
   .cgu_container {
     min-width: 200px;
+  }
+}
+
+
+@media (max-width: 840px) {
+  .cgu_wrapper{
+    display: none;
+  }
+
+  .cgu_wrapper_replacer{
+    display: block;
   }
 }
