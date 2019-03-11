@@ -1,0 +1,8 @@
+{
+  "name": "Terms",
+  "accept_terms": "I accept the Terms stated above",
+  "resumed_accept": "You accepts the Terms stated on the CGU section.",
+  "renamed_not_accept": "You did not accepts the Terms stated on the CGU section.",
+  "answer_accepted": "The Terms was set to accepted",
+  "answer_not_accepted": "The Terms should be accepted"
+}

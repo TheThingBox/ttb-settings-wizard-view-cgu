@@ -32,12 +32,12 @@ function init(app, apiToExpose, persistenceDir) {
       stats.status = 'ok'
       stats.readed = true
       syncStats(true)
-      res.json({message: `The Terms was set to accepted.`})
+      res.json({message: "OK", key: "answer_accepted", params: {}})
     } else {
       stats.status = 'nok'
       stats.readed = false
       syncStats(true)
-      res.status(403).json({message: "The Terms should be accepted", error: "cgu_not_readed"})
+      res.json({message: "Error", key: "answer_not_accepted", params: {}})
     }
   });
 }

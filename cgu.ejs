@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col m3 hide-on-small-only cgu_wrapper_replacer"></div>
   <div class="col m3 hide-on-small-only cgu_wrapper" style="padding-right:0px;">
-    <div style="float: right"><img style="width:158px" src="/settings_wizard/cgu/45-left-crop.jpg"/></div>
+    <div style="float: right"><img style="width:158px" src="/settings_wizard/cgu/45-left-crop.png"/></div>
   </div>
   <div class="col s12 m6 cgu_container" style="padding-right:0px; padding-left:0px;">
     <div id="cgu" class="setting-edit-container" style="border:1px solid #aaa;">
@@ -10,7 +10,7 @@
     </div>
   </div>
   <div class="col m3 hide-on-small-only cgu_wrapper" style="padding-left:0px;">
-    <div><img style="width:158px" src="/settings_wizard/cgu/45-right-crop.jpg"/></div>
+    <div><img style="width:158px" src="/settings_wizard/cgu/45-right-crop.png"/></div>
   </div>
 </div>
 <div class="row">
@@ -19,10 +19,10 @@
     <form action="#">
       <label>
         <input id="wizard_cgu_form_accept" type="checkbox" class="filled-in"/>
-        <span>I accept the Terms stated above</span>
+        <span><%= lang('accept_terms') %></span>
       </label>
     </form>
   </div>
 </div>
-<div id="wizard_<%= views[viewIndex].name %>_footer" class="row">
+<div id="wizard_<%= name %>_footer" class="row">
 </div>

@@ -1,77 +1,113 @@
-_wizard_view_cgu_index = params.views.findIndex(v => v.name === 'cgu')
-
-ejs.renderFile(
-  params.views[_wizard_view_cgu_index].ejs,
-  Object.assign({
-    viewIndex: _wizard_view_cgu_index,
-    wizard_cgu_html_url: `/settings_wizard/cgu/${params.device}_cgu_${params.lang}.html`
-  }, params),
-  { async: false },
-  (_err, _str) => {
-    document.getElementById('wizard_cgu').innerHTML = _str
-
-    form_params.cgu = {}
-    form_params.cgu.readed = false
-
-    document.getElementById("wizard_cgu_form_accept").addEventListener('input', cguReadedChange);
+var VIEW_CGU = function() {
+  var Cgu = function(options) {
+    this.type = Cgu.type
+    this.tab_name = this.type
+    this.tab_id = `tab_${this.type}`
+    this.navtab_id = `navtab_${this.type}`
+    this.main_container_id = `wizard_${this.type}`
+    this.index = modules.findIndex(m => m.type === this.type)
+    this.params = Object.assign({}, params.views[this.index])
+    this.lang = {}
+    this.view = ''
+    this.form = {}
   }
-)
 
-params.views[_wizard_view_cgu_index].isOk = function(){
-  if(form_params.cgu.readed){
-    return true
-  }
-  return false
-}
+  Cgu.prototype = new VIEW;
 
-params.views[_wizard_view_cgu_index].checkButtonNextStats = function(){
-  if(params.views[_wizard_view_cgu_index].isOk()){
-    document.getElementById("wizard_cgu_form_next").classList.remove("disabled")
-  } else {
-    document.getElementById("wizard_cgu_form_next").classList.add("disabled")
-    disableNextViews()
-  }
-}
+  Cgu.prototype.load = function(){
+    return new Promise( (resolve, reject) => {
+      this.getLang()
+      .then( (lang) => {
+        this.lang = i18n.create({ values: lang })
+        return this.getView()
+      })
+      .then( (view) => {
+        var _html = ejs.render(view, {
+          wizard_cgu_html_url: `/settings_wizard/cgu/${params.device}_cgu_${params.lang_key}.html`,
+          name: this.type,
+          lang: this.lang
+        })
+        if(!_html){
+          throw new Error(`cannot render ${this.params.ejs}`)
+        } else {
+          this.tab_name = this.lang('name')
+          document.getElementById(this.navtab_id).innerHTML = this.tab_name
+          document.getElementById(this.main_container_id).innerHTML = _html
 
-params.views[_wizard_view_cgu_index].getResumed = function(){
-  var _html = ''
-  if(form_params.cgu.readed){
-    _html =  `You accepts the Terms stated on the CGU section.`
-  } else {
-    _html =  `You did not accepts the Terms stated on the CGU section.`
-  }
-  return _html
-}
+          this.form = {}
+          this.form.readed = false
 
-params.views[_wizard_view_cgu_index].post = function(){
-  var request = new Request(params.views[_wizard_view_cgu_index].api)
-
-  var ok = params.views[_wizard_view_cgu_index].isOk()
-  if(!ok){
-    request.setData({})
-  } else {
-    request.setData({
-      readed: form_params.cgu.readed
+          document.getElementById("wizard_cgu_form_accept").addEventListener('input', (e) => { this.cguReadedChange(e) });
+          resolve()
+        }
+      })
+      .catch(err => {
+        reject(err)
+      })
     })
   }
-  return request.post()
-}
 
-params.views[_wizard_view_cgu_index].loaded = function(){
-  var _flagsRequest = new Request(params.views[_wizard_view_cgu_index].api)
-  return new Promise( (resolve, reject) => {
-    _flagsRequest.get().then( flags => {
-      if(flags.readed === true){
-        document.getElementById("wizard_cgu_form_accept").disabled = true
-        document.getElementById('wizard_cgu_form_accept').checked = true
-        form_params.cgu.readed = true
-      }
-      resolve()
+  Cgu.prototype.isOk = function(){
+    if(this.form.readed){
+      return true
+    }
+    return false
+  }
+
+  Cgu.prototype.checkButtonNextStats = function(){
+    if(this.isOk()){
+      document.getElementById("wizard_cgu_form_next").classList.remove("disabled")
+    } else {
+      document.getElementById("wizard_cgu_form_next").classList.add("disabled")
+      this.disableNextViews()
+    }
+  }
+
+  Cgu.prototype.cguReadedChange = function(e){
+    this.form.readed = document.getElementById('wizard_cgu_form_accept').checked
+    this.checkButtonNextStats()
+  }
+
+  Cgu.prototype.post = function(){
+    var request = new Request(this.params.api)
+
+    if(!this.isOk()){
+      request.setData({})
+    } else {
+      request.setData({
+        readed: this.form.readed
+      })
+    }
+    return request.post()
+  }
+
+  Cgu.prototype.getResumed = function(){
+    var _html = ''
+    if(this.form.readed){
+      _html = this.lang('resumed_accept')
+    } else {
+      _html = this.lang('renamed_not_accept')
+    }
+    return _html
+  }
+
+  Cgu.prototype.loaded = function(){
+    var _flagsRequest = new Request(this.params.api)
+    return new Promise( (resolve, reject) => {
+      _flagsRequest.get().then( flags => {
+        if(flags.readed === true){
+          document.getElementById("wizard_cgu_form_accept").disabled = true
+          document.getElementById('wizard_cgu_form_accept').checked = true
+          this.form.readed = true
+        }
+        resolve()
+      })
     })
-  })
-}
+  }
 
-function cguReadedChange(e){
-  form_params.cgu.readed = document.getElementById('wizard_cgu_form_accept').checked
-  params.views[_wizard_view_cgu_index].checkButtonNextStats()
-}
+  Cgu.type = 'cgu'
+
+  return Cgu
+}()
+
+modules.push({type: VIEW_CGU.type, module: VIEW_CGU})
