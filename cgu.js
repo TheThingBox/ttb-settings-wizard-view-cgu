@@ -59,8 +59,8 @@ var VIEW_CGU = function() {
       document.getElementById("wizard_cgu_form_next").classList.remove("disabled")
     } else {
       document.getElementById("wizard_cgu_form_next").classList.add("disabled")
-      this.disableNextViews()
     }
+    this.disableNextViews()
   }
 
   Cgu.prototype.cguReadedChange = function(e){
