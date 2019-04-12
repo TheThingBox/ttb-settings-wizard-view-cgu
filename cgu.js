@@ -37,7 +37,7 @@ var VIEW_CGU = function() {
           this.form = {}
           this.form.readed = false
 
-          document.getElementById("wizard_cgu_form_accept").addEventListener('input', (e) => { this.cguReadedChange(e) });
+          document.getElementById("wizard_cgu_form_accept").addEventListener('change', (e) => { this.cguReadedChange(e) });
           resolve()
         }
       })
